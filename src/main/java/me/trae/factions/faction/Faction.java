@@ -6,7 +6,9 @@ import me.trae.factions.faction.data.Member;
 import me.trae.factions.faction.data.Pillage;
 import me.trae.factions.faction.interfaces.IFaction;
 import me.trae.factions.utility.UtilJava;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -25,6 +27,7 @@ public class Faction implements IFaction {
     private final long created;
 
     private UUID founder;
+    private Location home;
 
     public Faction(final String name) {
         this.name = name;
@@ -67,6 +70,16 @@ public class Faction implements IFaction {
     }
 
     @Override
+    public int getMaxClaims() {
+        return 3 + this.getMembers().size();
+    }
+
+    @Override
+    public String getTerritoryString() {
+        return this.getTerritory().size() + "/" + this.getMaxClaims();
+    }
+
+    @Override
     public Map<UUID, Member> getMembers() {
         return this.members;
     }
@@ -102,6 +115,11 @@ public class Faction implements IFaction {
     }
 
     @Override
+    public String getMembersString(final FactionManager manager, final Player receiverPlayer) {
+        return "";
+    }
+
+    @Override
     public Map<String, Alliance> getAlliances() {
         return this.alliances;
     }
@@ -132,6 +150,11 @@ public class Faction implements IFaction {
     }
 
     @Override
+    public String getAlliancesString(final FactionManager manager, final Faction receiverFaction) {
+        return "";
+    }
+
+    @Override
     public Map<String, Enemy> getEnemies() {
         return this.enemies;
     }
@@ -154,6 +177,11 @@ public class Faction implements IFaction {
     @Override
     public boolean isEnemyByFaction(final Faction faction) {
         return this.getEnemies().containsKey(faction.getName());
+    }
+
+    @Override
+    public String getEnemiesString(final FactionManager manager, final Faction receiverFaction) {
+        return "";
     }
 
     @Override
@@ -182,8 +210,23 @@ public class Faction implements IFaction {
     }
 
     @Override
+    public String getPillagesString(final FactionManager manager, final Faction receiverFaction) {
+        return "";
+    }
+
+    @Override
+    public boolean isNeutralByFaction(final Faction faction) {
+        return !(this.equals(faction) && this.isAllianceByFaction(faction) && this.isEnemyByFaction(faction) && (this.isPillageByFaction(faction) || faction.isPillageByFaction(this)));
+    }
+
+    @Override
     public long getCreated() {
         return this.created;
+    }
+
+    @Override
+    public String getCreatedString() {
+        return "";
     }
 
     @Override
@@ -194,6 +237,30 @@ public class Faction implements IFaction {
     @Override
     public void setFounder(final UUID founder) {
         this.founder = founder;
+    }
+
+    @Override
+    public Location getHome() {
+        return this.home;
+    }
+
+    @Override
+    public void setHome(final Location home) {
+        this.home = home;
+    }
+
+    @Override
+    public boolean hasHome() {
+        return this.getHome() != null;
+    }
+
+    @Override
+    public String getHomeString() {
+        if (this.hasHome()) {
+            return "";
+        }
+
+        return ChatColor.RED + "Not set";
     }
 
     @Override

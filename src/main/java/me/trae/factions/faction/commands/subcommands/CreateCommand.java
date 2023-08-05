@@ -1,6 +1,6 @@
 package me.trae.factions.faction.commands.subcommands;
 
-import me.trae.factions.account.Account;
+import me.trae.factions.client.Client;
 import me.trae.factions.faction.AdminFaction;
 import me.trae.factions.faction.Faction;
 import me.trae.factions.faction.FactionManager;
@@ -33,7 +33,7 @@ public class CreateCommand extends FactionSubCommand implements EventContainer<F
     }
 
     @Override
-    public void execute(final Player player, final Account account, Faction faction, final String[] args) {
+    public void execute(final Player player, final Client client, Faction faction, final String[] args) {
         if (faction != null) {
             UtilMessage.message(player, "Factions", "You are already in a Faction.");
             return;
@@ -46,16 +46,16 @@ public class CreateCommand extends FactionSubCommand implements EventContainer<F
 
         final String name = args[1];
 
-        if (!(this.canCreateFaction(player, account, name))) {
+        if (!(this.canCreateFaction(player, client, name))) {
             return;
         }
 
-        faction = (account.isAdministrating() ? new AdminFaction(name) : new Faction(name));
+        faction = (client.isAdministrating() ? new AdminFaction(name) : new Faction(name));
 
         this.callEvent(new FactionCreateEvent(faction, player));
     }
 
-    private boolean canCreateFaction(final Player player, final Account account, final String name) {
+    private boolean canCreateFaction(final Player player, final Client client, final String name) {
         if (this.getManager().isFactionByName(name)) {
             UtilMessage.message(player, "Factions", "That name is already being used!");
             return false;
@@ -67,7 +67,7 @@ public class CreateCommand extends FactionSubCommand implements EventContainer<F
             return false;
         }
 
-        if (!(account.isAdministrating())) {
+        if (!(client.isAdministrating())) {
             final int minNameLength = this.getPrimitiveCasted(Integer.class, "MinNameLength");
             if (name.length() < minNameLength) {
                 UtilMessage.message(player, "Factions", "That name is too short. Minimum Length is " + ChatColor.YELLOW + minNameLength + ChatColor.GRAY + "!");

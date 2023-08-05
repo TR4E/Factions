@@ -1,5 +1,6 @@
 package me.trae.factions.command.abstracts.subcommand;
 
+import me.trae.factions.client.enums.Rank;
 import me.trae.factions.command.abstracts.AbstractCommand;
 import me.trae.factions.command.abstracts.subcommand.interfaces.IAbstractSubCommand;
 import me.trae.factions.framework.SpigotManager;
@@ -10,12 +11,17 @@ import org.bukkit.command.CommandSender;
 public abstract class AbstractSubCommand<M extends SpigotManager, CS extends CommandSender> implements IAbstractSubCommand<M, CS> {
 
     private final AbstractCommand<M, ?> command;
-    private final String label, permission;
+    private final String label;
+    private final Rank requiredRank;
 
-    public AbstractSubCommand(final AbstractCommand<M, ?> command, final String label, final String permission) {
+    public AbstractSubCommand(final AbstractCommand<M, ?> command, final String label, final Rank requiredRank) {
         this.command = command;
         this.label = label;
-        this.permission = permission;
+        this.requiredRank = requiredRank;
+    }
+
+    public AbstractSubCommand(final AbstractCommand<M, ?> command, final String label) {
+        this(command, label, command.getRequiredRank());
     }
 
     @Override
@@ -44,13 +50,13 @@ public abstract class AbstractSubCommand<M extends SpigotManager, CS extends Com
     }
 
     @Override
-    public String getPermission() {
-        return this.permission;
+    public Rank getRequiredRank() {
+        return this.requiredRank;
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "/" + this.getCommand().getLabel() + " " + this.getLabel();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package me.trae.factions.faction.commands.subcommands;
 
-import me.trae.factions.account.Account;
+import me.trae.factions.client.Client;
 import me.trae.factions.faction.Faction;
 import me.trae.factions.faction.FactionManager;
 import me.trae.factions.faction.commands.subcommands.abstracts.FactionSubCommand;
@@ -24,20 +24,20 @@ public class DisbandCommand extends FactionSubCommand implements EventContainer<
     }
 
     @Override
-    public void execute(final Player player, final Account account, final Faction faction, final String[] args) {
+    public void execute(final Player player, final Client client, final Faction faction, final String[] args) {
         if (faction == null) {
             UtilMessage.message(player, "Factions", "You are not in a Faction.");
             return;
         }
 
-        if (!(this.canDisbandFaction(player, account, faction))) {
+        if (!(this.canDisbandFaction(player, client, faction))) {
             return;
         }
 
         this.callEvent(new FactionDisbandEvent(faction, player));
     }
 
-    private boolean canDisbandFaction(final Player player, final Account account, final Faction faction) {
+    private boolean canDisbandFaction(final Player player, final Client client, final Faction faction) {
         return true;
     }
 

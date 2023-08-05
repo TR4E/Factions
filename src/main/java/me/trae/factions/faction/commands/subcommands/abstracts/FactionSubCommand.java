@@ -1,6 +1,6 @@
 package me.trae.factions.faction.commands.subcommands.abstracts;
 
-import me.trae.factions.account.Account;
+import me.trae.factions.client.Client;
 import me.trae.factions.faction.Faction;
 import me.trae.factions.faction.FactionManager;
 import me.trae.factions.faction.commands.subcommands.abstracts.interfaces.IFactionSubCommand;
@@ -36,12 +36,12 @@ public abstract class FactionSubCommand extends SpigotModule<FactionManager> imp
     }
 
     @Override
-    public boolean hasRequiredMemberRole(final Player player, final Account account, final Faction faction, final MemberRole memberRole, final boolean inform) {
+    public boolean hasRequiredMemberRole(final Player player, final Client client, final Faction faction, final MemberRole memberRole, final boolean inform) {
         if (memberRole == null) {
             return true;
         }
 
-        if (account.isAdministrating()) {
+        if (client.isAdministrating()) {
             return true;
         }
 
@@ -57,16 +57,16 @@ public abstract class FactionSubCommand extends SpigotModule<FactionManager> imp
     }
 
     @Override
-    public boolean hasRequiredMemberRole(final Player player, final Account account, final Faction faction, final boolean inform) {
-        return this.hasRequiredMemberRole(player, account, faction, this.getRequiredMemberRole(), inform);
+    public boolean hasRequiredMemberRole(final Player player, final Client client, final Faction faction, final boolean inform) {
+        return this.hasRequiredMemberRole(player, client, faction, this.getRequiredMemberRole(), inform);
     }
 
     @Override
-    public void Execute(final Player player, final Account account, final Faction faction, final String[] args) {
-        if (!(this.hasRequiredMemberRole(player, account, faction, true))) {
+    public void Execute(final Player player, final Client client, final Faction faction, final String[] args) {
+        if (!(this.hasRequiredMemberRole(player, client, faction, true))) {
             return;
         }
 
-        this.execute(player, account, faction, args);
+        this.execute(player, client, faction, args);
     }
 }

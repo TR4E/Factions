@@ -1,5 +1,6 @@
 package me.trae.factions.command.abstracts.interfaces;
 
+import me.trae.factions.client.enums.Rank;
 import me.trae.factions.command.abstracts.subcommand.AbstractSubCommand;
 import org.bukkit.command.CommandSender;
 
@@ -14,7 +15,7 @@ public interface IAbstractCommand<CS extends CommandSender> extends ICommandInfo
 
     List<String> getAliases();
 
-    String getPermission();
+    Rank getRequiredRank();
 
     void registerSubCommands();
 
@@ -28,9 +29,9 @@ public interface IAbstractCommand<CS extends CommandSender> extends ICommandInfo
 
     boolean isValidSender(final CommandSender sender, final boolean inform);
 
-    boolean hasPermission(final CommandSender sender, final String permission, final boolean inform);
+    boolean hasRequiredRank(final CommandSender sender, final Rank requiredRank, final boolean inform);
 
-    boolean hasPermission(final CommandSender sender, final boolean inform);
+    boolean hasRequiredRank(final CommandSender sender, final boolean inform);
 
     void execute(final CS cs, final String[] args);
 

@@ -1,5 +1,6 @@
 package me.trae.factions.command.abstracts.subcommand.interfaces;
 
+import me.trae.factions.client.enums.Rank;
 import me.trae.factions.command.abstracts.AbstractCommand;
 import me.trae.factions.command.abstracts.interfaces.ICommandInfo;
 import me.trae.factions.framework.SpigotManager;
@@ -18,7 +19,7 @@ public interface IAbstractSubCommand<M extends SpigotManager, CS extends Command
 
     String getLabel();
 
-    String getPermission();
+    Rank getRequiredRank();
 
     void Execute(final CommandSender sender, final String[] args);
 

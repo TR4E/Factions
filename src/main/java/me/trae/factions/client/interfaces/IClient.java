@@ -1,14 +1,22 @@
-package me.trae.factions.account.interfaces;
+package me.trae.factions.client.interfaces;
+
+import me.trae.factions.client.enums.Rank;
 
 import java.util.UUID;
 
-public interface IAccount {
+public interface IClient {
 
     UUID getUUID();
 
     String getName();
 
     void setName(final String name);
+
+    Rank getRank();
+
+    void setRank(final Rank rank);
+
+    boolean hasRank(final Rank rank);
 
     long getFirstJoined();
 

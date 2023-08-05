@@ -1,5 +1,7 @@
 package me.trae.factions.command.abstracts;
 
+import me.trae.factions.client.ClientManager;
+import me.trae.factions.client.enums.Rank;
 import me.trae.factions.command.abstracts.interfaces.IAbstractCommand;
 import me.trae.factions.command.abstracts.subcommand.AbstractSubCommand;
 import me.trae.factions.command.events.CommandExecuteEvent;
@@ -7,7 +9,6 @@ import me.trae.factions.framework.SpigotManager;
 import me.trae.factions.framework.SpigotModule;
 import me.trae.factions.utility.UtilJava;
 import me.trae.factions.utility.UtilMessage;
-import me.trae.factions.utility.UtilPlayer;
 import me.trae.factions.utility.UtilServer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,16 +25,16 @@ public abstract class AbstractCommand<M extends SpigotManager, CS extends Comman
 
     private final String label;
     private final List<String> aliases;
-    private final String permission;
     private final Map<String, AbstractSubCommand<?, ?>> subCommands;
 
-    public AbstractCommand(final M manager, final String label, final String[] aliases, final String permission) {
+    public AbstractCommand(final M manager, final String label, final String[] aliases, final Rank requiredRank) {
         super(manager);
 
         this.label = label;
         this.aliases = Arrays.asList(aliases);
-        this.permission = permission;
         this.subCommands = new HashMap<>();
+
+        this.addPrimitive("RequiredRank", requiredRank.name());
     }
 
     @Override
@@ -47,8 +48,8 @@ public abstract class AbstractCommand<M extends SpigotManager, CS extends Comman
     }
 
     @Override
-    public String getPermission() {
-        return this.permission;
+    public Rank getRequiredRank() {
+        return Rank.valueOf(this.getPrimitiveCasted(String.class, "RequiredRank"));
     }
 
     @Override
@@ -89,8 +90,8 @@ public abstract class AbstractCommand<M extends SpigotManager, CS extends Comman
     }
 
     @Override
-    public boolean hasPermission(final CommandSender sender, final String permission, final boolean inform) {
-        if (!(sender instanceof Player) || UtilPlayer.hasPermission(UtilJava.cast(Player.class, sender), permission)) {
+    public boolean hasRequiredRank(final CommandSender sender, final Rank requiredRank, final boolean inform) {
+        if (!(sender instanceof Player) || this.getInstance().getManagerByClass(ClientManager.class).getClientByPlayer(UtilJava.cast(Player.class, sender)).hasRank(requiredRank)) {
             return true;
         }
 
@@ -102,8 +103,8 @@ public abstract class AbstractCommand<M extends SpigotManager, CS extends Comman
     }
 
     @Override
-    public boolean hasPermission(final CommandSender sender, final boolean inform) {
-        return this.hasPermission(sender, this.getPermission(), inform);
+    public boolean hasRequiredRank(final CommandSender sender, final boolean inform) {
+        return this.hasRequiredRank(sender, this.getRequiredRank(), inform);
     }
 
     @Override
@@ -135,7 +136,7 @@ public abstract class AbstractCommand<M extends SpigotManager, CS extends Comman
             return;
         }
 
-        if (!(this.hasPermission(sender, subCommand.getPermission(), true))) {
+        if (!(this.hasRequiredRank(sender, subCommand.getCommand().getRequiredRank(), true))) {
             return;
         }
 
@@ -170,7 +171,7 @@ public abstract class AbstractCommand<M extends SpigotManager, CS extends Comman
                     return false;
                 }
 
-                if (!(AbstractCommand.this.hasPermission(sender, true))) {
+                if (!(AbstractCommand.this.hasRequiredRank(sender, true))) {
                     return false;
                 }
 

@@ -1,6 +1,7 @@
 package me.trae.factions.framework;
 
 import me.trae.factions.framework.interfaces.IFrame;
+import me.trae.factions.utility.UtilFormat;
 import me.trae.factions.utility.UtilJava;
 
 import java.util.HashMap;
@@ -14,7 +15,7 @@ public class Frame implements IFrame {
 
     public Frame(final SpigotPlugin instance) {
         this.instance = instance;
-        this.name = this.getClass().getSimpleName();
+        this.name = UtilFormat.unSliceString(this.getClass().getSimpleName());
         this.primitives = new HashMap<>();
     }
 

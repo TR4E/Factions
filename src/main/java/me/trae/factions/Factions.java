@@ -1,6 +1,6 @@
 package me.trae.factions;
 
-import me.trae.factions.account.AccountManager;
+import me.trae.factions.client.ClientManager;
 import me.trae.factions.command.CommandManager;
 import me.trae.factions.faction.FactionManager;
 import me.trae.factions.framework.SpigotPlugin;
@@ -10,7 +10,7 @@ public class Factions extends SpigotPlugin {
 
     @Override
     public void registerManagers() {
-        addManager(new AccountManager(this));
+        addManager(new ClientManager(this));
         addManager(new CommandManager(this));
         addManager(new FactionManager(this));
         addManager(new ServerManager(this));

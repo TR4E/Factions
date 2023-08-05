@@ -1,5 +1,7 @@
 package me.trae.factions.faction;
 
+import me.trae.factions.client.Client;
+import me.trae.factions.client.ClientManager;
 import me.trae.factions.faction.commands.FactionCommand;
 import me.trae.factions.faction.commands.subcommands.CreateCommand;
 import me.trae.factions.faction.commands.subcommands.DisbandCommand;
@@ -13,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -136,5 +139,29 @@ public class FactionManager extends SpigotManager implements IFactionManager {
     @Override
     public String getFactionShortName(final Faction faction, final FactionRelation factionRelation) {
         return factionRelation.getSuffix() + faction.getName();
+    }
+
+    @Override
+    public LinkedHashMap<String, String> getFactionInformation(final Player player, final Client client, final Faction playerFaction, final Faction targetFaction) {
+        final LinkedHashMap<String, String> map = new LinkedHashMap<>();
+
+        if (client.isAdministrating()) {
+            map.put("Founder", this.getInstance().getManagerByClass(ClientManager.class).getClientByUUID(targetFaction.getFounder()).getName());
+        }
+
+        map.put("Age", targetFaction.getCreatedString());
+
+        map.put("Territory", targetFaction.getTerritoryString());
+
+        if (playerFaction == targetFaction || client.isAdministrating()) {
+            map.put("Home", targetFaction.getHomeString());
+        }
+
+        map.put("Allies", targetFaction.getAlliancesString(this, playerFaction));
+        map.put("Enemies", targetFaction.getEnemiesString(this, playerFaction));
+        map.put("Pillages", targetFaction.getPillagesString(this, playerFaction));
+        map.put("Members", targetFaction.getMembersString(this, player));
+
+        return map;
     }
 }
